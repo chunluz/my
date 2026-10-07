@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>毕业启航指南 · 新锐生存百科</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal-900: #0b3b3b;
+    --teal-800: #0f4c4c;
+    --teal-700: #14746f;
+    --teal-500: #14b8a6;
+    --teal-300: #5eead4;
+    --bg: #eef6f5;
+    --card: #ffffff;
+    --text: #10302f;
+    --muted: #6b8583;
+    --border: #d9e8e6;
+    --accent: #14b8a6;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ 顶栏 ============ */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 12px 26px;
+    background: linear-gradient(120deg, #0b3b3b, #14746f 55%, #0f766e);
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 18px rgba(11, 59, 59, .28);
+    z-index: 20;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .logo {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: rgba(255,255,255,.15);
+    display: grid; place-items: center;
+    font-size: 20px;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .brand h1 { font-size: 17px; letter-spacing: .5px; font-weight: 700; }
+  .brand p { font-size: 11px; opacity: .68; margin-top: 2px; letter-spacing: .3px; }
+
+  .search {
+    margin-left: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 999px;
+    padding: 0 14px;
+    width: min(470px, 46vw);
+    transition: .2s;
+  }
+  .search:focus-within {
+    background: rgba(255,255,255,.22);
+    border-color: var(--teal-300);
+    box-shadow: 0 0 0 3px rgba(94,234,212,.18);
+  }
+  .search-icon { font-size: 13px; opacity: .8; }
+  .search input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: #fff; padding: 10px 8px; font-size: 13px;
+    font-family: inherit;
+  }
+  .search input::placeholder { color: rgba(255,255,255,.58); }
+  .clear-btn {
+    background: rgba(255,255,255,.2); border: none; color: #fff;
+    width: 20px; height: 20px; border-radius: 50%;
+    font-size: 11px; cursor: pointer; line-height: 1;
+    display: grid; place-items: center; transition: .15s;
+  }
+  .clear-btn:hover { background: rgba(255,255,255,.38); }
+
+  /* ============ 布局 ============ */
+  .layout { flex: 1; display: flex; overflow: hidden; }
+
+  .sidebar {
+    width: 236px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .side-label {
+    font-size: 11px; color: #9bb3b1; letter-spacing: 1.5px;
+    padding: 4px 12px 8px; font-weight: 600;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #375757;
+    border-left: 3px solid transparent;
+    transition: background .16s, color .16s, border-color .16s;
+    user-select: none;
+  }
+  .nav-item:hover { background: #f0f8f7; }
+  .nav-item.active {
+    background: #e6f6f4;
+    color: #0b3b3b;
+    font-weight: 600;
+    border-left-color: var(--accent);
+  }
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-item .nav-count {
+    margin-left: auto; font-size: 11px; color: #9bb3b1;
+    background: #f2f7f7; padding: 1px 7px; border-radius: 999px;
+  }
+  .nav-item.active .nav-count { background: #fff; color: var(--accent); }
+
+  .random-btn {
+    margin-top: auto;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+    background: #fbfefd;
+    color: var(--muted);
+    font-size: 12.5px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: .18s;
+  }
+  .random-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #f0fbf9;
+  }
+
+  /* ============ 内容区 ============ */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 34px 70px;
+    scroll-behavior: smooth;
+  }
+
+  .board-head { margin-bottom: 24px; }
+  .board-head h2 {
+    font-size: 25px; letter-spacing: .4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .board-head > p {
+    color: var(--muted); margin-top: 8px; font-size: 13.5px; line-height: 1.6;
+  }
+  .board-stats { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .stat-pill {
+    font-size: 12px; padding: 4px 13px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--border); color: var(--muted);
+  }
+  .stat-pill.accent { color: var(--accent); border-color: var(--accent); background: #f0fbf9; }
+
+  .group {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 2px rgba(16,48,47,.04);
+    animation: fadeUp .35s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .group-head { display: flex; align-items: center; gap: 10px; }
+  .group-head .g-icon { font-size: 18px; }
+  .group-head h3 { font-size: 16.5px; letter-spacing: .3px; }
+  .group-intro {
+    font-size: 12.5px; color: var(--muted);
+    margin-top: 7px; line-height: 1.6;
+  }
+
+  .sub-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--accent); font-weight: 700;
+    margin: 18px 0 10px; letter-spacing: .5px;
+  }
+  .sub-title::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 15px 14px;
+    cursor: pointer;
+    background: #fbfefd;
+    transition: transform .18s, box-shadow .18s, border-color .18s, background .18s;
+  }
+  .item:hover {
+    border-color: var(--accent);
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(20,184,166,.13);
+    transform: translateY(-2px);
+  }
+  .item-name {
+    font-size: 13.8px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 6px;
+  }
+  .item-name::after {
+    content: '▾';
+    margin-left: auto;
+    font-size: 10px;
+    color: #b8cccb;
+    transition: transform .2s;
+  }
+  .item.open .item-name::after { transform: rotate(180deg); }
+  .item-desc {
+    font-size: 12.5px; color: var(--muted); line-height: 1.72;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .item.open .item-desc { -webkit-line-clamp: unset; }
+
+  .item.flash {
+    animation: flash 1.6s ease;
+  }
+  @keyframes flash {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(20,184,166,0); }
+    25%      { box-shadow: 0 0 0 5px rgba(20,184,166,.3); }
+    60%      { box-shadow: 0 0 0 5px rgba(20,184,166,.15); }
+  }
+
+  /* ============ 搜索结果 ============ */
+  .result-list { display: flex; flex-direction: column; gap: 12px; }
+  .result {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: .18s;
+  }
+  .result:hover {
+    border-color: var(--accent);
+    box-shadow: 0 6px 18px rgba(20,184,166,.12);
+    transform: translateX(3px);
+  }
+  .result-path {
+    font-size: 11.5px; color: #9bb3b1; letter-spacing: .4px;
+    margin-bottom: 7px;
+  }
+  .result-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .result-desc { font-size: 12.8px; color: var(--muted); line-height: 1.7; }
+
+  mark {
+    background: #fff3b0;
+    color: #7a5c00;
+    border-radius: 3px;
+    padding: 0 2px;
+    font-weight: 700;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 70px 20px;
+    color: var(--muted);
+  }
+  .empty .big { font-size: 42px; margin-bottom: 14px; }
+  .empty p { font-size: 13.5px; line-height: 1.9; }
+
+  /* ============ 滚动条 ============ */
+  .content::-webkit-scrollbar,
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .content::-webkit-scrollbar-thumb,
+  .sidebar::-webkit-scrollbar-thumb {
+    background: #cfe2e0; border-radius: 8px;
+  }
+  .content::-webkit-scrollbar-thumb:hover { background: #b3d0cd; }
+  .content::-webkit-scrollbar-track,
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 880px) {
+    .topbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding: 12px 16px;
+    }
+    .brand p { display: none; }
+    .search { width: 100%; margin-left: 0; }
+
+    .layout { flex-direction: column; }
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .side-label { display: none; }
+    .nav-item {
+      white-space: nowrap;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      border-radius: 8px;
+      padding: 9px 14px;
+    }
+    .nav-item.active { border-left-color: transparent; border-bottom-color: var(--accent); }
+    .nav-item .nav-count { display: none; }
+    .random-btn { display: none; }
+
+    .content { padding: 18px 16px 60px; }
+    .item-grid { grid-template-columns: 1fr; }
+    .board-head h2 { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🎓</div>
+    <div>
+      <h1>毕业启航指南</h1>
+      <p>新锐生存百科 · 刚毕业大学生的第一本数字百科全书</p>
+    </div>
+  </div>
+  <div class="search">
+    <span class="search-icon">🔍</span>
+    <input id="searchInput" type="text"
+           placeholder="搜索「三方协议」「租房避坑」「社保公积金」…（按 / 聚焦）">
+    <button id="clearBtn" class="clear-btn" hidden>✕</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-label">百科类目</div>
+    <nav id="navList"></nav>
+    <button id="randomBtn" class="random-btn">🎲 随机翻一条词条</button>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+
+<script>
+/* =========================================================
+   数据层：严格依据思维导图构建的类目树
+   ========================================================= */
+const WIKI = [
+  {
+    id: 'life',
+    name: '生活板块',
+    icon: '🏡',
+    color: '#14b8a6',
+    tagline: '从宿舍到出租屋，把柴米油盐的日子过明白。',
+    groups: [
+      {
+        name: '衣', icon: '👕',
+        intro: '从学生装到职场装，衣橱也要完成一次社会化。',
+        subs: [
+          { name: '买', items: [
+            { name: '买什么', desc: '职场基础款清单：白衬衫、直筒西裤、针织开衫……面试与通勤的第一套行头怎么配。' },
+            { name: '去哪买', desc: '平价快时尚、奥莱折扣、二手平台的优劣对比，以及一年中什么时候买最划算。' }
+          ]},
+          { name: '穿', items: [
+            { name: '穿什么', desc: '互联网、金融、国企、体制内的 dress code 速查表，别在入职第一天穿错。' }
+          ]},
+          { name: '收', items: [
+            { name: '收哪去', desc: '小户型衣柜分区法、真空压缩袋使用技巧、床下与门后空间的极限利用。' },
+            { name: '怎么收', desc: '换季衣物的清洗、封存、防潮防虫完整流程，明年拿出来还是新的。' }
+          ]},
+          { name: '清', items: [
+            { name: '旧的怎么办', desc: '旧衣回收点、线上回收平台、二手转卖的定价策略与拍照技巧。' }
+          ]}
+        ]
+      },
+      {
+        name: '食', icon: '🍚',
+        intro: '在外卖吃腻之前，先学会喂饱自己。',
+        subs: [
+          { name: '买', items: [
+            { name: '买什么', desc: '一人食采购清单：耐储存的主食、优质蛋白与蔬菜搭配，避免买多烂在冰箱里。' },
+            { name: '去哪买', desc: '菜市场、生鲜电商、社区团购的价格与新鲜度横向对比。' }
+          ]},
+          { name: '做', items: [
+            { name: '做什么', desc: '新手也能一次成功的十道家常菜，以及一周便当菜单模板。' },
+            { name: '怎么做', desc: '电饭煲一锅出、微波炉快手菜、空气炸锅万能公式。' }
+          ]},
+          { name: '放', items: [
+            { name: '存放指南', desc: '冰箱分区收纳图 + 常见食材保鲜期速查表：什么该冷藏，什么该常温。' }
+          ]}
+        ]
+      },
+      {
+        name: '住', icon: '🏠',
+        intro: '租房，是毕业后的第一场硬仗。',
+        subs: [
+          { name: '找', items: [
+            { name: '上哪找', desc: '找房渠道汇总：中介、房东直租、品牌公寓、转租群，各自的坑在哪里。' },
+            { name: '怎么找', desc: '看房清单、合同避坑条款、押一付三的谈判空间与验房拍照留证。' }
+          ]},
+          { name: '住', items: [
+            { name: '入住前准备', desc: '验房清单、水电燃气过户、物业交割、押金退还条件的书面确认。' },
+            { name: '入住后必备', desc: '宽带办理、必备家居好物清单、与室友和邻居相处的边界感。' }
+          ]},
+          { name: '活', items: [
+            { name: '生存准备', desc: '独居安全指南、家庭急救常识、周边医院超市快递点的提前摸排。' }
+          ]}
+        ]
+      },
+      {
+        name: '行', icon: '🚇',
+        intro: '通勤两小时，还是住在公司隔壁？这是一道算术题。',
+        subs: [
+          { name: null, items: [
+            { name: '出发', desc: '通勤时间规划、早晚高峰避堵路线、错峰出行的性价比计算。' },
+            { name: '工具', desc: '公共交通优惠、共享单车月卡、电动车购买与上牌全流程。' },
+            { name: '到达', desc: '火车票机票抢票攻略、差旅订票与报销的入门常识。' }
+          ]}
+        ]
+      },
+      {
+        name: '维修百科', icon: '🔧',
+        intro: '能自己修好的，就别花那笔上门费。',
+        subs: [
+          { name: null, items: [
+            { name: '五金工具认识', desc: '家庭常备工具箱清单：螺丝刀、扳手、生料带、卷尺，以及各自的正确用法。' }
+          ]},
+          { name: '判断', items: [
+            { name: '能不能修', desc: '维修成本 vs 换新成本的判断公式，什么时候该果断放弃。' },
+            { name: '硬件还是软件', desc: '家电与数码设备的基础故障排查思路：先排除最简单的可能。' }
+          ]},
+          { name: '修', items: [
+            { name: '常见家电', desc: '洗衣机不脱水、空调不制冷、热水器打不着火的自查步骤。' },
+            { name: '数码设备', desc: '电脑清灰、网络断连自救、手机进水后的正确处理姿势。' },
+            { name: '家居物品', desc: '下水道疏通、换灯泡、通马桶、组装宜家家具的实战教程。' }
+          ]}
+        ]
+      }
+    ]
+  },
+  {
+    id: 'career',
+    name: '就业板块',
+    icon: '💼',
+    color: '#3b82f6',
+    tagline: '从投出第一份简历，到签下第一份合同。',
+    groups: [
+      {
+        name: '自我认知', icon: '🧭',
+        intro: '先搞清楚自己是谁，再决定往哪走。',
+        subs: [
+          { name: null, items: [
+            { name: '认识自己', desc: 'MBTI、霍兰德职业兴趣测试的解读方式，以及它们各自的局限性。' },
+            { name: '职业方向', desc: '如何把专业、兴趣、能力与市场需求四者交叉出一个可落地的方向。' }
+          ]}
+        ]
+      },
+      {
+        name: '职业规划', icon: '🗺️',
+        intro: '第一份工作不决定一生，但会影响你的起跑姿势。',
+        subs: [
+          { name: null, items: [
+            { name: '就业市场趋势', desc: '当前宏观就业环境解读，校招与社招的节奏差异与应对策略。' },
+            { name: '行业需求变化', desc: '哪些行业在扩张、哪些在收缩，如何看懂一份行业研究报告。' },
+            { name: '热门岗位与冷门方向', desc: '岗位 JD 深度解析：热门赛道的内卷程度与冷门方向的隐藏机会。' }
+          ]}
+        ]
+      },
+      {
+        name: '材料和常识', icon: '📑',
+        intro: '毕业季最容易踩坑的地方，全在这里。',
+        subs: [
+          { name: null, items: [
+            { name: '三方协议', desc: '它到底是什么、怎么签、违约金要不要赔、毁约之后怎么办。' },
+            { name: '劳动合同', desc: '试用期时长、违约金条款、竞业限制，以及哪些条款签了也无效。' },
+            { name: '社保公积金', desc: '五险一金分别是什么、缴纳基数怎么看、断缴会有什么影响。' },
+            { name: '落户政策', desc: '各大城市人才引进政策汇总与申请条件对比。' },
+            { name: '档案派遣与报到证', desc: '档案去哪了、报到证有什么用、遗失之后如何补办。' }
+          ]}
+        ]
+      },
+      {
+        name: '简历', icon: '📄',
+        intro: 'HR 平均只看 7 秒，你要在前 3 行赢下来。',
+        subs: [
+          { name: null, items: [
+            { name: '简历撰写', desc: '简历模板库、STAR 法则、用数据说话的写法，以及不同岗位的优化侧重。' }
+          ]}
+        ]
+      },
+      {
+        name: '信息获取', icon: '🔎',
+        intro: '信息差，就是机会差。',
+        subs: [
+          { name: null, items: [
+            { name: '求职渠道', desc: '校招与社招渠道汇总、内推怎么找、如何辨别皮包公司与求职诈骗。' }
+          ]}
+        ]
+      }
+    ]
+  },
+  {
+    id: 'skill',
+    name: '能力提升',
+    icon: '🚀',
+    color: '#8b5cf6',
+    tagline: '离开学校以后，学习这件事才真正开始。',
+    groups: [
+      {
+        name: '知识获取渠道', icon: '📚',
+        intro: '免费且高质量的自我充电入口。',
+        subs: [
+          { name: null, items: [
+            { name: '在线课程平台', desc: '国内外免费公开课、技能学习网站的分类整理与使用建议。' },
+            { name: '行业报告与数据', desc: '去哪里找免费的行业研究报告、数据源与趋势分析工具。' },
+            { name: '职场软技能', desc: '沟通表达、Excel、PPT、时间管理等通用能力的提升路径。' }
+          ]}
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bar',
+    name: '电子酒吧',
+    icon: '🍻',
+    color: '#f59e0b',
+    tagline: '白天好好做人，晚上往死里蹦。',
+    groups: [
+      {
+        name: '往死里问', icon: '❓',
+        intro: '匿名提问区，问什么都可以。',
+        subs: [
+          { name: null, items: [
+            { name: '职场吐槽', desc: '领导画饼、同事甩锅、加班无底线——说出来会好受一点。' },
+            { name: '生活求助', desc: '租房纠纷、情感困惑、人际关系，总有人经历过你正在经历的。' }
+          ]}
+        ]
+      },
+      {
+        name: '往死里蹦', icon: '🎉',
+        intro: '周末别一个人待着。',
+        subs: [
+          { name: null, items: [
+            { name: '解压小游戏', desc: '几分钟就能玩一局，专治下班后的精神内耗。' },
+            { name: '同城搭子', desc: '找饭搭子、运动搭子、看展搭子，把周末填满。' }
+          ]}
+        ]
+      }
+    ]
+  }
+];
+
+/* =========================================================
+   构建全局索引（用于搜索 / 随机）
+   ========================================================= */
+const INDEX = [];
+WIKI.forEach(board => {
+  board.groups.forEach(group => {
+    group.subs.forEach(sub => {
+      sub.items.forEach(item => {
+        INDEX.push({
+          boardId: board.id,
+          boardName: board.name,
+          groupName: group.name,
+          subName: sub.name,
+          item,
+          key: [board.id, group.name, sub.name || '', item.name].join('¦'),
+          path: [board.name, group.name, sub.name].filter(Boolean).join(' / ')
+        });
+      });
+    });
+  });
+});
+
+/* =========================================================
+   DOM & 工具
+   ========================================================= */
+const navList    = document.getElementById('navList');
+const content    = document.getElementById('content');
+const searchInput= document.getElementById('searchInput');
+const clearBtn   = document.getElementById('clearBtn');
+const randomBtn  = document.getElementById('randomBtn');
+
+let currentBoardId = WIKI[0].id;
+
+const getBoard = id => WIKI.find(b => b.id === id);
+
+function countItems(board) {
+  let n = 0;
+  board.groups.forEach(g => g.subs.forEach(s => { n += s.items.length; }));
+  return n;
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function hl(text, kw) {
+  const safe = esc(text);
+  if (!kw) return safe;
+  const re = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return safe.replace(re, '<mark>$1</mark>');
+}
+
+/* =========================================================
+   渲染：左侧导航
+   ========================================================= */
+function renderNav() {
+  navList.innerHTML = WIKI.map(b => `
+    <div class="nav-item ${b.id === currentBoardId ? 'active' : ''}" data-id="${b.id}">
+      <span class="nav-icon">${b.icon}</span>
+      <span>${b.name}</span>
+      <span class="nav-count">${countItems(b)}</span>
+    </div>
+  `).join('');
+}
+
+navList.addEventListener('click', e => {
+  const el = e.target.closest('.nav-item');
+  if (!el) return;
+  clearSearch();
+  goto(el.dataset.id);
+});
+
+/* =========================================================
+   渲染：板块内容
+   ========================================================= */
+function renderBoard(board) {
+  document.documentElement.style.setProperty('--accent', board.color);
+
+  let html = `
+    <div class="board-head">
+      <h2><span>${board.icon}</span>${esc(board.name)}</h2>
+      <p>${esc(board.tagline)}</p>
+      <div class="board-stats">
+        <span class="stat-pill accent">${board.groups.length} 个类目</span>
+        <span class="stat-pill">${countItems(board)} 条百科词条</span>
+      </div>
+    </div>
+  `;
+
+  board.groups.forEach((group, gi) => {
+    html += `
+      <section class="group" style="animation-delay:${Math.min(gi * 45, 260)}ms">
+        <div class="group-head">
+          <span class="g-icon">${group.icon || '📌'}</span>
+          <h3>${esc(group.name)}</h3>
+        </div>
+        ${group.intro ? `<p class="group-intro">${esc(group.intro)}</p>` : ''}
+    `;
+
+    group.subs.forEach(sub => {
+      html += sub.name ? `<div class="sub-title">${esc(sub.name)}</div>` : '';
+      html += `<div class="item-grid">`;
+      sub.items.forEach(item => {
+        const key = [board.id, group.name, sub.name || '', item.name].join('¦');
+        html += `
+          <div class="item" data-key="${esc(key)}">
+            <div class="item-name">${esc(item.name)}</div>
+            <div class="item-desc">${esc(item.desc)}</div>
+          </div>
+        `;
+      });
+      html += `</div>`;
+    });
+
+    html += `</section>`;
+  });
+
+  content.innerHTML = html;
+  content.scrollTop = 0;
+}
+
+/* =========================================================
+   页面跳转（含定位高亮）
+   ========================================================= */
+function goto(boardId, key) {
+  currentBoardId = boardId;
+  renderNav();
+  renderBoard(getBoard(boardId));
+
+  if (!key) return;
+  requestAnimationFrame(() => {
+    const items = content.querySelectorAll('.item');
+    for (const el of items) {
+      if (el.dataset.key === key) {
+        el.classList.add('open', 'flash');
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => el.classList.remove('flash'), 1700);
+        break;
+      }
+    }
+  });
+}
+
+/* =========================================================
+   内容区点击（展开词条 / 打开搜索结果）
+   ========================================================= */
+content.addEventListener('click', e => {
+  const item = e.target.closest('.item');
+  if (item) { item.classList.toggle('open'); return; }
+
+  const result = e.target.closest('.result');
+  if (result) {
+    clearSearch();
+    goto(result.dataset.board, result.dataset.key);
+  }
+});
+
+/* =========================================================
+   搜索
+   ========================================================= */
+function clearSearch() {
+  if (searchInput.value) {
+    searchInput.value = '';
+    clearBtn.hidden = true;
+  }
+}
+
+function doSearch(rawKw) {
+  const kw = rawKw.trim();
+  if (!kw) {
+    renderBoard(getBoard(currentBoardId));
+    return;
+  }
+
+  const lower = kw.toLowerCase();
+  const results = INDEX.filter(x =>
+    (x.item.name + x.item.desc + x.path).toLowerCase().includes(lower)
+  );
+
+  document.documentElement.style.setProperty('--accent', '#14b8a6');
+
+  let html = `
+    <div class="board-head">
+      <h2><span>🔍</span>搜索「${esc(kw)}」</h2>
+      <p>共找到 <strong>${results.length}</strong> 条相关词条</p>
+    </div>
+  `;
+
+  if (!results.length) {
+    html += `
+      <div class="empty">
+        <div class="big">🫧</div>
+        <p>没有找到相关词条。<br>换个关键词试试，比如「三方协议」「租房」「社保」。</p>
+      </div>
+    `;
+  } else {
+    html += `<div class="result-list">`;
+    results.forEach(r => {
+      html += `
+        <div class="result" data-board="${r.boardId}" data-key="${esc(r.key)}">
+          <div class="result-path">${esc(r.path)}</div>
+          <div class="result-name">${hl(r.item.name, kw)}</div>
+          <div class="result-desc">${hl(r.item.desc, kw)}</div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  content.innerHTML = html;
+  content.scrollTop = 0;
+}
+
+let searchTimer = null;
+searchInput.addEventListener('input', () => {
+  clearBtn.hidden = !searchInput.value;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => doSearch(searchInput.value), 140);
+});
+
+clearBtn.addEventListener('click', () => {
+  clearSearch();
+  doSearch('');
+  searchInput.focus();
+});
+
+/* 快捷键：/ 聚焦搜索，Esc 清空 */
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape' && document.activeElement === searchInput) {
+    clearSearch();
+    doSearch('');
+    searchInput.blur();
+  }
+});
+
+/* =========================================================
+   随机词条
+   ========================================================= */
+randomBtn.addEventListener('click', () => {
+  const r = INDEX[Math.floor(Math.random() * INDEX.length)];
+  clearSearch();
+  goto(r.boardId, r.key);
+});
+
+/* =========================================================
+   初始化
+   ========================================================= */
+renderNav();
+renderBoard(getBoard(currentBoardId));
+</script>
+</body>
+</html>
